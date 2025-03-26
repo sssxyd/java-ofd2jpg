@@ -1,0 +1,15 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": ".*\\.ttf"
+      },
+      {
+        "pattern": ".*\\.otf"
+      },
+      {
+        "pattern": ".*\\.ofd"
+      }
+    ]
+  }
+}

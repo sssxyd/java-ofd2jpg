@@ -1,9 +1,5 @@
 package com.yaofangwang.ofd2jpg;
 
-import org.ofdrw.converter.export.ImageExporter;
-import org.ofdrw.converter.GeneralConvertException;
-import org.ofdrw.converter.utils.CommonUtil;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,6 +9,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
+
+import org.ofdrw.converter.GeneralConvertException;
+import org.ofdrw.converter.export.ImageExporter;
+import org.ofdrw.converter.utils.CommonUtil;
 
 public class Converter {
     public static void main(String[] args) {
@@ -33,11 +33,12 @@ public class Converter {
             System.out.println("ofd2jpg 1.0.0");
             System.exit(0);
         }
-        convert(args[0], args[1], 120);
+        convert(commandArgs.ofdFilePath, commandArgs.outDirPath, commandArgs.dpi);
     }
 
     static void convert(String ofdFilePath, String outDirPath, int dpi) {
-        Path ofdPath = Paths.get(ofdFilePath);
+        Path ofdPath = Paths.get(ofdFilePath).toAbsolutePath();
+        
 
         // 处理输出目录逻辑
         Path finalOutDir = resolveOutputDirectory(ofdPath, outDirPath);
@@ -72,7 +73,7 @@ public class Converter {
             return ofdPath.getParent();
         }
 
-        Path specifiedPath = Paths.get(outDirPath);
+        Path specifiedPath = Paths.get(outDirPath).toAbsolutePath();
         if (Files.isDirectory(specifiedPath)) {
             return specifiedPath;
         }
@@ -122,11 +123,13 @@ public class Converter {
             });
         } catch (IOException e) {
             System.err.println("warning: can't close temp dir: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     private static void handleError(String message, Exception e, int exitCode) {
         System.err.println(message + e.getMessage());
+        e.printStackTrace();
         System.exit(exitCode);
     }
 }

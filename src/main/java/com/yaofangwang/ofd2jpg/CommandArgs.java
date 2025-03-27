@@ -5,6 +5,7 @@ class CommandArgs {
     String ofdFilePath;
     String outDirPath;
     boolean showVersion = false;
+    boolean showInfo = false;
     boolean showHelp = false;
     boolean showError = false;
 
@@ -29,6 +30,10 @@ class CommandArgs {
                     case "version": {
                         showVersion = true;
                         return;
+                    }
+                    case "info": {
+                        showInfo = true;
+                        break;
                     }
                     case "dip": {
                         if (value == null) handleError("--dip needs a DPI value");
@@ -57,6 +62,9 @@ class CommandArgs {
                     case 'v':
                         showVersion = true;
                         return;
+                    case 'i':
+                        showInfo = true;
+                        break;
                     case 'd':
                         if (value == null && ++i < args.length) value = args[i];
                         if (value == null) handleError("-d needs a DPI value");

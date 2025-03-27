@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -14,6 +15,8 @@ import java.util.stream.Stream;
 import org.ofdrw.converter.GeneralConvertException;
 import org.ofdrw.converter.export.ImageExporter;
 import org.ofdrw.converter.utils.CommonUtil;
+import org.ofdrw.core.basicStructure.ofd.docInfo.CT_DocInfo;
+import org.ofdrw.reader.OFDReader;
 
 public class Converter {
     public static void main(String[] args) {
@@ -26,15 +29,52 @@ public class Converter {
             System.out.println("Options:");
             System.out.println("  -h, --help      Show this help message and exit");
             System.out.println("  -v, --version   Show version information and exit");
-            System.out.println("  -d, --dpi=DPI   Set the DPI for the output images (default: 300)");
-            System.out.println("  -o, --output=DIR   Set the output directory for the converted images (default: current directory)");
+            System.out.println("  -i, --info      Show OFD DocInfo and exit");
+            System.out.println("  -d, --dpi=DPI   Set the DPI for the output images (default: 128)");
+            System.out.println("  -o, --output=DIR   Set the output directory for the converted images (default: ofd file directory)");
             System.exit(0);
         }
         if (commandArgs.showVersion) {
             System.out.println("ofd2jpg 1.0.0");
             System.exit(0);
         }
+        if (commandArgs.showInfo) {
+            info(commandArgs.ofdFilePath);
+            System.exit(0);
+        }
         convert(commandArgs.ofdFilePath, commandArgs.outDirPath, commandArgs.dpi);
+    }
+
+    static void info(String ofdFilePath) {
+        Path ofdPath = Paths.get(ofdFilePath).toAbsolutePath();
+        try(OFDReader reader = new OFDReader(ofdPath)) {
+            System.out.println("NumberOfPages: " + reader.getNumberOfPages());
+            List<String> fonts = reader.getResMgt().getFonts().stream().collect(ArrayList::new, (list, font) -> {
+                list.add(font.getFontName());
+            }, ArrayList::addAll);
+            System.out.println("Fonts: " + String.join(", ", fonts));
+
+            CT_DocInfo info = reader.getOFDDir().getOfd().getDocBody().getDocInfo();
+            System.out.println("Author: " + (info.getAuthor() == null ? "" : info.getAuthor()));
+            System.out.println("CreationDate: " + (info.getCreationDate() == null ? "" : info.getCreationDate()));
+            System.out.println("Creator: " + (info.getCreator() == null ? "" : info.getCreator()));
+            System.out.println("CreatorVersion: " + (info.getCreatorVersion() == null ? "" : info.getCreatorVersion()));
+            System.out.println("ModDate: " + (info.getModDate() == null ? "" : info.getModDate()));
+            System.out.println("Subject: " + (info.getSubject() == null ? "" : info.getSubject()));
+            System.out.println("Abstract: " + (info.getAbstract() == null ? "" : info.getAbstract()));
+            System.out.println("Keywords: " + (info.getKeywords() == null ? "" : String.join(", ", info.getKeywords().getKeywords())));
+
+            if(info.getCustomDatas() != null){
+                info.getCustomDatas().getCustomDatas().forEach(cd -> {
+                    System.out.println("CustomData: " + cd.attributeValue("Name") + " = " + cd.getValue());
+                });
+            }
+
+        } catch (IOException e) {
+            handleError("read OFD file failed: ", e, 1);
+        } catch (Exception e) {
+            handleError("unknown error: ", e, 3);
+        }
     }
 
     static void convert(String ofdFilePath, String outDirPath, int dpi) {
@@ -101,7 +141,7 @@ public class Converter {
                 Path source = jpgFiles.get(i);
                 String newName = singleFile ?
                         baseName + ".jpg" :
-                        String.format("%s_%d.jpg", baseName, i);
+                        String.format("%s-%d.jpg", baseName, i);
 
                 Files.move(source, finalOutDir.resolve(newName),
                         StandardCopyOption.REPLACE_EXISTING);

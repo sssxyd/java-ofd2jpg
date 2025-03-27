@@ -5,7 +5,7 @@ OFD格式文档导出JPEG的命令行工具
 [ofd2jpg-1.0.0-all.jar](https://github.com/sssxyd/java-ofd2jpg/releases/download/1.0.0/ofd2jpg-1.0.0-all.jar)
 
 # usage
-1. help
+## help
   ```shell
   java -jar ofd2jpg-1.0.0-all.jar -h
   ```
@@ -18,7 +18,7 @@ OFD格式文档导出JPEG的命令行工具
     -d, --dpi=DPI   Set the DPI for the output images (default: 128)
     -o, --output=DIR   Set the output directory for the converted images (default: ofd file directory)
   ```
-2. info
+## info
   ```shell
   java -Dfile.encoding=UTF-8 -jar ofd2jpg-1.0.0-all.jar -i xxx.ofd
   ```
@@ -42,7 +42,7 @@ OFD格式文档导出JPEG的命令行工具
   CustomData: 购买方纳税人识别号 = 91110302MA01xxxxxx
   CustomData: 销售方纳税人识别号 = 92420100MA4Jxxxxxx
   ```
-3. convert
+## convert
    ```shell
    java -jar ofd2jpg-1.0.0-all.jar xxx.ofd
    # export to xxx.ofd.jpg

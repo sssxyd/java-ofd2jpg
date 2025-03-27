@@ -1,6 +1,9 @@
 # java-ofd2jpg
 OFD格式文档导出JPEG的命令行工具
 
+# download
+[ofd2jpg-1.0.0-all.jar](https://github.com/sssxyd/java-ofd2jpg/releases/download/1.0.0/ofd2jpg-1.0.0-all.jar)
+
 # usage
 ```shell
 java -jar ofd2jpg-1.0.0-all.jar -h

@@ -8,6 +8,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.ofdrw.converter.GeneralConvertException;
@@ -87,8 +88,7 @@ public class Converter {
                     .sorted(Comparator.comparing(p -> {
                         String name = p.getFileName().toString();
                         return Integer.parseInt(name.substring(0, name.lastIndexOf('.')));
-                    }))
-                    .toList();
+                    })).collect(Collectors.toList());
 
             if (jpgFiles.isEmpty()) {
                 throw new GeneralConvertException("no jpg files generated");

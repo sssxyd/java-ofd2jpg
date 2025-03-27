@@ -8,7 +8,7 @@ buildscript {
 plugins {
     id 'java'
     id 'application'
-    id 'org.graalvm.buildtools.native' version '0.10.2'
+//    id 'org.graalvm.buildtools.native' version '0.10.2'
     id 'com.github.johnrengelman.shadow' version '8.1.1'  // 用于合并依赖
 }
 
@@ -20,37 +20,42 @@ repositories {
     mavenCentral()
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 dependencies {
     implementation 'org.ofdrw:ofdrw-converter:2.3.5'
     implementation 'org.slf4j:slf4j-api:2.0.13'
-    implementation 'ch.qos.logback:logback-classic:1.5.6'
+    implementation 'ch.qos.logback:logback-classic:1.2.11'
 }
 
 application {
     mainClass = 'com.yaofangwang.ofd2jpg.Converter'
 }
 
-graalvmNative {
-    binaries {
-        main {
-            imageName = 'ofd2jpeg'
-            buildArgs.addAll([
-                '--no-fallback',
-                '-H:+ReportExceptionStackTraces',
-                '-H:+ReportUnsupportedElementsAtRuntime',
-                '-H:IncludeResources=^/usr/(share|local/share)/fonts/.*',  // 正则匹配系统字体路径
-                '-H:+AddAllCharsets',
-                '-H:+JNI',  // 启用JNI支持
-                '--enable-url-protocols=file,http,https',
-                '--initialize-at-run-time=sun.awt.X11FontManager,sun.font.FontManager,sun.java2d.SunGraphicsEnvironment,java.awt.Toolkit',
-                '--initialize-at-build-time=org.slf4j,ch.qos.logback', 
-                '-J-Xmx4G',
-                '-march=compatibility'
-            ])
-            configurationFileDirectories.from(files("src/main/resources/META-INF/native-image"))
-        }
-    }
-}
+//graalvmNative {
+//    binaries {
+//        main {
+//            imageName = 'ofd2jpeg'
+//            buildArgs.addAll([
+//                '--no-fallback',
+//                '-H:+ReportExceptionStackTraces',
+//                '-H:+ReportUnsupportedElementsAtRuntime',
+//                '-H:IncludeResources=^/usr/(share|local/share)/fonts/.*',  // 正则匹配系统字体路径
+//                '-H:+AddAllCharsets',
+//                '-H:+JNI',  // 启用JNI支持
+//                '--enable-url-protocols=file,http,https',
+//                '--initialize-at-run-time=sun.awt.X11FontManager,sun.font.FontManager,sun.java2d.SunGraphicsEnvironment,java.awt.Toolkit',
+//                '--initialize-at-build-time=org.slf4j,ch.qos.logback',
+//                '-J-Xmx4G',
+//                '-march=compatibility'
+//            ])
+//            configurationFileDirectories.from(files("src/main/resources/META-INF/native-image"))
+//        }
+//    }
+//}
 
 tasks.named('run') {
     args = ['src/test/resources/test.ofd', 'build/output']

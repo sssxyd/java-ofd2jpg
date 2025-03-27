@@ -22,23 +22,23 @@ class CommandArgs {
                 String value = parts.length > 1 ? parts[1] : null;
 
                 switch (option) {
-                    case "help" -> {
+                    case "help": {
                         showHelp = true;
                         return;
                     }
-                    case "version" -> {
+                    case "version": {
                         showVersion = true;
                         return;
                     }
-                    case "dip" -> {
+                    case "dip": {
                         if (value == null) handleError("--dip needs a DPI value");
                         dpi = parseInt(value);
                     }
-                    case "output" -> {
+                    case "output": {
                         if (value == null) handleError("--output needs a directory path");
                         outDirPath = value;
                     }
-                    default -> handleError("unknown option: --" + option);
+                    default: handleError("unknown option: --" + option);
                 }
             }
             // 处理短选项
